@@ -68,7 +68,10 @@ module RequireAll
         end
       rescue SystemCallError
         # If the stat failed, maybe we have a glob!
-        files = Dir.glob arg
+        files = Dir.glob(arg).select { |fn| File.file?(fn) }.sort_by do |fn|
+          fn.count('/')
+        end
+
 
         # Maybe it's an .rb file and the .rb was omitted
         if File.file?(arg + '.rb')
